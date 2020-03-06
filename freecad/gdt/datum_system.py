@@ -20,14 +20,14 @@
 #*                                                                         *
 #***************************************************************************
 
-from GDT import *
+from .gdt import *
 
 gdt = GDTWidget()
 gdt.dialogWidgets.append( groupBoxWidget(Text='Constituents', List=[comboLabelWidget(Text='Primary:',List=[]),comboLabelWidget(Text='Secondary:',List=[]), comboLabelWidget(Text='Tertiary:',List=[])]) )
 
 class DatumSystemCommand:
     def __init__(self):
-        self.iconPath = ':/dd/icons/datumSystem.svg'
+        self.iconPath = str(ICON_DIR / 'datumSystem.svg')
         self.toolTip = 'Add Datum System'
         self.dictionary = []
         for i in range(1,100):

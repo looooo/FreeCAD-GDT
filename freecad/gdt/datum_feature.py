@@ -20,22 +20,34 @@
 #*                                                                         *
 #***************************************************************************
 
-from GDT import *
-import  DraftTools
+from .gdt import *
+import DraftTools
 
 gdt = GDTWidget()
-gdt.dialogWidgets.append( fieldLabelWidget(Text='Offset:') )
-class AnnotationPlaneCommand:
+dictionaryDF = []
+dictionaryDF = list(map(chr, range(65, 91))) # 65 = A, 91 = Z
+gdt.dialogWidgets.append( textLabelWidget(Text='Datum feature:',Mask='>A', Dictionary=dictionaryDF) ) #http://doc.qt.io/qt-5/qlineedit.html#inputMask-prop
+gdt.dialogWidgets.append( comboLabelWidget(Text='Active annotation plane:', List=[]) )
+gdt.dialogWidgets.append( CheckBoxWidget(Text = 'Create corresponding Datum System') )
+
+class DatumFeatureCommand:
     def __init__(self):
-        self.iconPath = ':/dd/icons/annotationPlane.svg'
-        self.toolTip = 'Add Annotation Plane'
+        self.iconPath = str(ICON_DIR / 'datumFeature.svg')
+        self.toolTip = 'Add Datum Feature'
         self.dictionary = []
         for i in range(1,100):
-            self.dictionary.append('AP'+str(i))
-        self.idGDT = 4
+            self.dictionary.append('DF'+str(i))
+        self.idGDT = 1
 
     def Activated(self):
-        showGrid()
+        ContainerOfData = makeContainerOfData()
+        if getAnnotationObj(ContainerOfData):
+            self.toolTip = 'Add Datum Feature to ' + getAnnotationObj(ContainerOfData).Label
+            gdt.dialogWidgets[1] = None
+        else:
+            self.toolTip = 'Add Datum Feature'
+            showGrid()
+            gdt.dialogWidgets[1] = comboLabelWidget(Text='Active annotation plane:', List=getAllAnnotationPlaneObjects())
         gdt.activate(idGDT = self.idGDT, dialogTitle=self.toolTip, dialogIconPath=self.iconPath, endFunction=self.Activated, dictionary=self.dictionary)
 
     def GetResources(self):
@@ -46,9 +58,24 @@ class AnnotationPlaneCommand:
             }
 
     def IsActive(self):
-        if len(getSelection()) == 1:
-            return (getSelectionEx()[0].SubObjects[0].ShapeType == 'Face')
+        if len(getObjectsOfType('AnnotationPlane')) == 0:
+            return False
+        if getSelection():
+            for i in range(len(getSelectionEx())):
+                if len(getSelectionEx()[i].SubObjects) == 0:
+                    return False
+                for j in range(len(getSelectionEx()[i].SubObjects)):
+                    if getSelectionEx()[i].SubObjects[j].ShapeType == 'Face':
+                        pass
+                    else:
+                        return False
+            ContainerOfData = makeContainerOfData()
+            if getAnnotationObj(ContainerOfData) == None or getAnnotationObj(ContainerOfData).DF == None:
+                pass
+            else:
+                return False
         else:
             return False
+        return True
 
-FreeCADGui.addCommand('dd_annotationPlane', AnnotationPlaneCommand())
+FreeCADGui.addCommand('dd_datumFeature', DatumFeatureCommand())
