@@ -54,6 +54,7 @@ except ImportError:
 
 DIR = pathlib.Path(os.path.dirname(__file__))
 ICON_DIR = DIR / "Resources" / "icons"
+iconPath = str(ICON_DIR)
 
 checkBoxState = True
 auxDictionaryDS=[]
@@ -942,11 +943,11 @@ def makeGeometricTolerance(Name, ContainerOfData):
         _ViewProviderGeometricTolerance(obj.ViewObject)
     obj.Label = Name
     obj.Characteristic = ContainerOfData.characteristic.Label
-    obj.CharacteristicIcon = ContainerOfData.characteristic.Icon
+    obj.CharacteristicIcon = str(ContainerOfData.characteristic.Icon)
     obj.Circumference = ContainerOfData.circumference
     obj.ToleranceValue = ContainerOfData.toleranceValue
     obj.FeatureControlFrame = ContainerOfData.featureControlFrame.toolTip
-    obj.FeatureControlFrameIcon = ContainerOfData.featureControlFrame.Icon
+    obj.FeatureControlFrameIcon = str(ContainerOfData.featureControlFrame.Icon)
     obj.DS = ContainerOfData.datumSystem
     group = FreeCAD.ActiveDocument.getObject("GDT")
     try:
@@ -1610,7 +1611,7 @@ class comboLabelWidget:
         self.ContainerOfData.combo[self.k] = QtGui.QComboBox()
         for i in range(len(self.List)):
             if self.Icons != None:
-                self.ContainerOfData.combo[self.k].addItem( QtGui.QIcon(self.Icons[i]), self.List[i] )
+                self.ContainerOfData.combo[self.k].addItem( QtGui.QIcon(str(self.Icons[i])), self.List[i] )
             else:
                 if self.List[i] == None:
                     self.ContainerOfData.combo[self.k].addItem( '' )
@@ -1740,7 +1741,7 @@ class fieldLabeCombolWidget:
         self.combo.setSizeAdjustPolicy(QtGui.QComboBox.SizeAdjustPolicy(2))
         for i in range(len(self.List)):
             if self.Icons != None:
-                self.combo.addItem( QtGui.QIcon(self.Icons[i]), self.List[i] )
+                self.combo.addItem( QtGui.QIcon(str(self.Icons[i])), self.List[i] )
             else:
                 self.combo.addItem( self.List[i] )
         if self.ToolTip != None:

@@ -351,7 +351,7 @@ class comboLabelWidget_inv:
             if self.obj.Secondary != None:
                 actualValue = self.obj.Secondary.Label
                 pos = self.getPos(actualValue)
-                self.data.combo[self.k].setCurrentIndex(pos)
+                self.data.combo[self.k].setCurrentIndex(int(pos))
             self.data.textDS[1] = self.data.combo[self.k].currentText()
             self.data.secondary = self.List[self.data.combo[self.k].currentIndex()]
         elif self.Text == 'Tertiary:':
